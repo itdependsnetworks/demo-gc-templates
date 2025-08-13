@@ -9,68 +9,7 @@ platform qfp utilization monitor load 80
 platform punt-keepalive disable-kernel-core
 platform console serial
 !
-{% include './ios/hostname.j2' %}
-!
-boot-start-marker
-boot-end-marker
-!
-!
-vrf definition MANAGEMENT
- !
- address-family ipv4
- exit-address-family
- !
- address-family ipv6
- exit-address-family
-!
-logging userinfo
-!
-{% if config_context["aaa-new-model"] == false %}
-no aaa new-model
-{% else %}
-aaa new-model
-{% endif %}
-{% include "./ios/call_home.j2" %}
-!
-!
-!
-!
-!
-!
-!
-{% include './ios/dns.j2' %}
-!
-!
-!
-login on-success log
-!
-!
-!
-!
-!
-!
-!
-subscriber templating
-! 
-! 
-! 
-! 
-!
-!
-multilink bundle-name authenticated
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
+var {{ var}}
 !
 !
 crypto pki trustpoint TP-self-signed-1088426642
@@ -167,83 +106,8 @@ file prompt quiet
 !
 spanning-tree extend system-id
 !
-{% include './ios/local_user.j2' %}
-!
-redundancy
-!
-!
-!
-!
-!
-{% if config_context["lldp"] == true %}
-lldp run
-{% endif %}
-{% if config_context["cdp"] == true %}
-cdp run
-{% endif %}
-!
-! 
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-!
-! 
-! 
-!
-!
-{% include './ios/interfaces.j2' %}
-{% if config_context["bgp"] is defined %}
-{% include './ios/bgp.j2' %}
-{% endif %}
-!
-!
-virtual-service csr_mgmt
 !
 ip forward-protocol nd
 no ip http server
 ip http authentication local
 no ip http secure-server
-!
-{% if config_context["routes"] is defined %}
-{% if config_context["routes"]["static"] is defined %}
-{% for static in config_context["routes"]["static"] %}
-{{ static }}
-{% endfor %}
-{% endif %}
-{% endif %}
-ip scp server enable
-!
-!
-{% include './ios/syslog.j2' %}
-!
-!
-{% include './ios/snmp.j2' %}
-!
-!
-!
-control-plane
-!
-!
-!
-!
-!
-alias exec ntcclear clear platform software vnic-if nv
-!
-{% include './ios/console_vty.j2' %}
-!
-{% include './ios/ntp.j2' %}
-!
-!
-!
-!
-!
-{% include './ios/services.j2' %}
-end
